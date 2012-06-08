@@ -1,1 +1,60 @@
-<!DOCTYPE html><html><head><title>TeamTimer</title><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><link rel="stylesheet" href="base.css"><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script><script src="lib/bootstrap.min.js"></script><script src="templates.js"></script><script src="main.js"></script></head><body><div class="navbar"><div class="navbar-inner"><div class="container"><a class="brand">TeamTimer</a></div></div></div><div class="container-fluid"><div class="span10"><p>Hello</p></div><div class="span2"></div></div></body></html>
+<!DOCTYPE html><html><head><title>TeamTimer</title><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><link rel="stylesheet" href="base.css"><link rel="stylesheet" href="mediaelementplayer.css"><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script><script src="lib/bootstrap.min.js"></script><script src="lib/mediaelement-and-player.js"></script><script src="templates.js"></script><script src="main.js"></script></head><body><canvas id="c"></canvas><video width="640" height="360" preload="none" id="v"><source src="http://www.youtube.com/watch?v=bXI3L_lBn1s&amp;feature=plcp&amp;html5=True" type="video/youtube"></video><script>v = new MediaElement('v', {
+    // shows debug errors on screen
+    enablePluginDebug: false,
+    // remove or reorder to change plugin priority
+    plugins: ['flash','silverlight'],
+    // specify to force MediaElement to use a particular video or audio type
+    type: '',
+    // path to Flash and Silverlight plugins
+    pluginPath: '/lib/',
+    // name of flash file
+    flashName: 'flashmediaelement.swf',
+    // name of silverlight file
+    silverlightName: 'silverlightmediaelement.xap',
+    // default if the <video width> is not specified
+    defaultVideoWidth: 480,
+    // default if the <video height> is not specified     
+    defaultVideoHeight: 270,
+    // overrides <video width>
+    pluginWidth: -1,
+    // overrides <video height>       
+    pluginHeight: -1,
+    // rate in milliseconds for Flash and Silverlight to fire the timeupdate event
+    // larger number is less accurate, but less strain on plugin->JavaScript bridge
+    timerRate: 250,
+    // method that fires when the Flash or Silverlight object is ready
+    success: function (mediaElement, domObject) { 
+    
+        // add event listener
+        mediaElement.addEventListener('timeupdate', function(e) {
+        
+            document.getElementById('current-time').innerHTML = mediaElement.currentTime;
+            
+        }, false);
+        
+        // call the play method
+        mediaElement.play();
+        
+    },
+    // fires when a problem is detected
+    error: function () { 
+    
+    }
+});</script><script>document.addEventListener('DOMContentLoaded', function(){
+var v = document.getElementById('v');
+var canvas = document.getElementById('c');
+var context = canvas.getContext('2d');
+var cw = Math.floor(canvas.clientWidth / 100);
+var ch = Math.floor(canvas.clientHeight / 100);
+canvas.width = cw;
+canvas.height = ch;
+v.addEventListener('play', function(){
+    draw(this,context,cw,ch);
+},false);
+},false);
+function draw(v,c,w,h) {
+  console.log('called');
+    if(v.paused || v.ended) return false;
+    c.drawImage(v,0,0,w,h);
+    setTimeout(draw,20,v,c,w,h);
+}</script></body></html>
